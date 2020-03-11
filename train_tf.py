@@ -4,7 +4,7 @@ import os
 
 from sagemaker.tensorflow import TensorFlow
 
-MODEL_NAME = 'my_model'
+MODEL_NAME = 'mymodel'
 BUCKET_NAME = 'your_bucket_name'
 HYPER_PARAMS = {
     'batch_size': 64,
@@ -17,7 +17,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_path', '-d', type=str, required=True,
                         help='s3 path of training dataset (e.g. s3://...')
-    parser.add_argument('--image_name', '-m', type=str, required=True)
     parser.add_argument('--instance_type', '-i', type=str, default='ml.p2.xlarge')
 
     return parser.parse_args()
@@ -36,7 +35,6 @@ def main():
 
     estimator = TensorFlow(
         entry_point="entrypoints/tf.py",
-        base_job_name='my-test',
         role=IAM_ROLE,
         code_location=code_location,
         train_instance_count=1,
