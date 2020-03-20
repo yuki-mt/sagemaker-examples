@@ -1,32 +1,19 @@
 import pandas as pd
 import os
-from sklearn.model_selection import train_test_split
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--local', action='store_true')
-parser.add_argument('--option', action='store_true')
 parser.add_argument('--ratio', '-r', type=float, default=0.2)
 args = parser.parse_args()
 
-if args.local:
-    base_path = './'
-else:
-    base_path = '/opt/ml/processing/'
+base_path = '/opt/ml/processing'
+input_path = os.path.join(base_path, 'input')
+output_path = os.path.join(base_path, 'output')
 
+df = pd.read_csv(os.path.join(input_path, 'dataset.csv'))
 
-df = pd.read_csv(base_path + 'input/dataset.csv')
+df['new'] = 1
+os.makedirs(output_path, exist_ok=True)
 
-added = df.copy()
-added['new'] = 1
-train, test = train_test_split(added, test_size=args.ratio)
-train, validation = train_test_split(train, test_size=args.ratio)
-
-os.makedirs(base_path + 'output/train', exist_ok=True)
-os.makedirs(base_path + 'output/validation', exist_ok=True)
-os.makedirs(base_path + 'output/test', exist_ok=True)
-
-train.to_csv(base_path + "output/train/train.csv")
-validation.to_csv(base_path + "output/validation/validation.csv")
-test.to_csv(base_path + "output/test/test.csv")
+df.to_csv(os.path.join(output_path, 'out.csv'))
 print('Finished running processing job')
