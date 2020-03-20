@@ -51,7 +51,12 @@ def main():
         checkpoint_s3_uri=checkpoint_s3_path,
         hyperparameters=HYPER_PARAMS)
 
-    estimator.fit(inputs=args.dataset_path, job_name=job_name)
+    if args.instance_type == 'local':
+        abs_data_dir = os.path.join(os.getcwd(), args.dataset_path)
+        inputs = f'file://{abs_data_dir}'
+    else:
+        inputs = args.dataset_path
+    estimator.fit(inputs=inputs, job_name=job_name)
 
 
 if __name__ == '__main__':
